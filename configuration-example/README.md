@@ -1,0 +1,1 @@
+Source: https://wiki.alpinelinux.org/wiki/Relay_email_to_gmail_(msmtp,_mailx,_sendmail
