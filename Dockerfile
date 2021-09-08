@@ -1,4 +1,4 @@
-FROM jobber:1.4.4-alpine3.11@sha256:a85b68725beeb738e5d6e0f029dd01c4e0dd793aa4f1bfdf70c8d5f37586c3d5
+FROM jobber:1.4.4-alpine3.11@sha256:652facc4ce8aa8669bc36de8a996361a34188e2a0b307d1d3be69e4963d41b26
 
 # Allow package installations.
 USER root
