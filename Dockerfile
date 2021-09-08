@@ -10,8 +10,7 @@ RUN apk --no-cache add \
     && rm -rf /var/cache/apk/* \
     && pip3 install awscli \
     && pip3 install awscli-plugin-endpoint \
-    && ln -sf /usr/bin/msmtp /usr/sbin/sendmail \
-    && rm -rf /var/cache/apk/*
+    && ln -sf /usr/bin/msmtp /usr/sbin/sendmail
 
 # Switch back to the original user.
 USER jobberuser
