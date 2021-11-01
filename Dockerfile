@@ -1,4 +1,4 @@
-FROM dargmuesli/jobber:1.4.5@sha256:9189d2f5b0196d566f95200a304e94fd46a85cb88aa8fce2a1fff4eb00673385
+FROM dargmuesli/jobber:1.4.5-alpine@sha256:62690cc7060b9be355fa43171a8908d512d5f83f9e26c0fa35ea545c35e438dd
 
 # Allow package installations.
 USER root
