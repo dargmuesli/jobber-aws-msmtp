@@ -9,8 +9,10 @@ RUN apk --no-cache add \
         py3-pip \
         curl \
     && rm -rf /var/cache/apk/* \
-    && pip3 install awscli \
-    && pip3 install awscli-plugin-endpoint \
+    && python3 -m venv .venv \
+    && source .venv/bin/activate \
+    && python3 -m pip install awscli \
+    && python3 -m pip install awscli-plugin-endpoint \
     && ln -sf /usr/bin/msmtp /usr/sbin/sendmail
 
 # Switch back to the original user.
