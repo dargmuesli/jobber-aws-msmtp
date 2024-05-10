@@ -7,6 +7,7 @@ RUN apk --no-cache add \
         ca-certificates \
         msmtp \
         py3-pip \
+        curl \
     && rm -rf /var/cache/apk/* \
     && pip3 install awscli \
     && pip3 install awscli-plugin-endpoint \
