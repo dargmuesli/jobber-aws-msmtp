@@ -1,67 +1,28 @@
 name: CI
 
-on: [create, pull_request, push]
+permissions: {}
 
-env:
-  IMAGE_ID: ${{ github.repository }}
+on:
+  pull_request:
+  push:
+    branches:
+      - alpha
+      - beta
+      - main
+      - renovate/**
 
 jobs:
-  docker:
-    name: Docker
-    runs-on: ubuntu-latest
-    steps:
-      - name: Git checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
-      - name: Docker Buildx setup
-        id: buildx
-        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
-
-      - name: Registry login
-        if: github.event_name != 'pull_request'
-        run: echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USER_NAME }}" --password-stdin
-
-      - name: Build
-        run: |
-          # Strip git ref prefix from version
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-
-          # Use Docker `latest` tag convention
-          [ "$VERSION" == "master" ] && VERSION=latest
-
-          echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
-
-          # Push the Docker image to the registry on git pushes that either pushed a tag or one of the following branches: [master, develop]
-          if [[
-            (
-              "${{ github.event_name }}" == "create"
-              &&
-              ${{ startsWith(github.ref, 'refs/tags/') }} == "true"
-            )
-            ||
-            (
-              "${{ github.event_name }}" == "push"
-              &&
-              ${{ startsWith(github.ref, 'refs/heads/') }} == "true"
-              &&
-              (
-                $VERSION == "latest"
-                ||
-                $VERSION == "develop"
-              )
-            )
-          ]]
-          then
-            docker buildx build \
-              --cache-from=$IMAGE_ID:cache \
-              --cache-to=$IMAGE_ID:cache \
-              --push \
-              -t $IMAGE_ID:$VERSION \
-              .
-          else
-            docker buildx build \
-              --cache-from=$IMAGE_ID:cache \
-              -t $IMAGE_ID:$VERSION \
-              .
-          fi
+  ci-optimization:
+    name: CI optimization
+    uses: dargmuesli/github-actions/.github/workflows/ci-optimization.yml@661e39fe1c9e484d94c6a5a9d4c9946d57c41771 # 5.1.0
+    permissions:
+      pull-requests: read
+  build:
+    needs: ci-optimization
+    if: needs.ci-optimization.outputs.continue == 'true'
+    name: Build
+    uses: dargmuesli/github-actions/.github/workflows/docker.yml@661e39fe1c9e484d94c6a5a9d4c9946d57c41771 # 5.1.0
+    permissions:
+      packages: write
+    with:
+      PUSH: false
